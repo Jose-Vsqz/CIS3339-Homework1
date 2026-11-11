@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('node:path');
 
 function fail(status, message) {
     const error = new Error(message);
@@ -84,6 +85,23 @@ function createApp({ Student, Course, Enrollment }) {
         const course = await find(Course, { id: requiredText(req.params.id, 'id') }, 'Course');
         const enrollments = await Enrollment.find({ course: course._id }).populate('student');
         res.json({ course, students: enrollments.map((item) => item.student).filter(Boolean) });
+    });
+    // Keep unknown API endpoints JSON-only, even when the browser accepts HTML.
+    app.use('/api', (req, res) => res.status(404).json({ error: 'Endpoint not found' }));
+
+    const frontendDirectory = path.join(__dirname, '..', 'frontend', 'dist');
+    app.use(express.static(frontendDirectory, { index: false, redirect: false }));
+    // Explicit client routes preserve the existing JSON 404 for unknown endpoints
+    // and missing assets. Express 5 also handles HEAD for these GET routes.
+    app.get(['/', '/index.html', '/students', '/students/:id', '/courses', '/courses.html', '/enrollments'], (req, res, next) => {
+        res.sendFile(path.join(frontendDirectory, 'index.html'), { maxAge: 0 }, (error) => {
+            if (!error) return;
+            if (res.headersSent) return next(error);
+            if (error.code === 'ENOENT' || error.status === 404) {
+                return res.status(503).json({ error: 'Frontend build missing. Run npm run build from the project root, then retry.' });
+            }
+            next(error);
+        });
     });
     app.use((req, res) => res.status(404).json({ error: 'Endpoint not found' }));
     app.use((error, req, res, next) => {

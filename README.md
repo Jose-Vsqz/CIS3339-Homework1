@@ -1,10 +1,94 @@
 # CIS 3339 Homework 1: Vue 3 and MongoDB Migration
 
-Phase 1 backend setup, API endpoints, integrity limits, and test commands are
-documented in [backend/README.md](backend/README.md). The assignment requirements
-below are retained. Phase 2 Vue development, build, and test instructions are in
-[frontend/README.md](frontend/README.md). Production frontend hosting is pending
-Phase 3.
+This project uses a Vue 3 Composition API frontend with Vue Router and Pinia,
+an Express REST API, and local MongoDB persistence through Mongoose. Express
+serves the compiled frontend and API together at **http://localhost:3000**.
+
+## Windows PowerShell: install, build, and start
+
+Required software: Node.js 22.12 or newer (Node 24 recommended), npm, a modern
+browser, and MongoDB Community Edition running locally. Atlas, credentials,
+replica sets, manual collection creation, and database seeding are not required.
+
+1. Open PowerShell in this repository's root (the folder containing `backend/`,
+   `frontend/`, and the root `package.json`). Check `node --version` and
+   `npm --version`.
+2. Start MongoDB Community Edition. If installed as the default Windows service,
+   check it with `Get-Service -Name MongoDB`. If stopped, run
+   `Start-Service -Name MongoDB` from an elevated PowerShell window, or use the
+   Windows Services application. If installed without a service, run `mongod`
+   with your existing data directory in a separate terminal; keep it running.
+   MongoDB should listen at `mongodb://127.0.0.1:27017`.
+3. Run these commands from the repository root:
+
+```powershell
+npm install
+npm run build
+npm start
+```
+
+Root `npm install` automatically installs backend and frontend dependencies
+through its `postinstall` script. `npm run install:all` can repeat that step.
+`npm run build` compiles Vue into `frontend/dist/`. `npm start` runs Express;
+keep that terminal open and visit **http://localhost:3000**. Stop it with Ctrl+C.
+Rebuild after frontend source changes. Do not open HTML files directly.
+
+The real, tracked root `.env` contains only this local configuration:
+
+```dotenv
+MONGODB_URI=mongodb://127.0.0.1:27017/cis3339_homework1
+PORT=3000
+```
+
+Existing process environment variables override `.env`. Startup automatically
+creates the database collections and required indexes before accepting requests,
+even when the database is empty or does not yet exist. No migration, seed,
+import, or rebuild of MongoDB data is needed. Existing records persist across
+server restarts. The original `backend/students.json` is preserved as a reference
+and is never used as runtime storage or automatically imported.
+
+Direct navigation and refresh work for `/students`, `/courses`, `/enrollments`,
+and `/students/:id`. Frontend requests use relative `/api` URLs on the same
+Express origin in production. Unknown API endpoints and missing assets retain
+JSON 404 responses. If the frontend build is missing, page requests return a
+503 message instructing you to run `npm run build`; API endpoints remain usable.
+
+## Tests and development
+
+From the repository root, with local MongoDB running:
+
+```powershell
+npm test
+```
+
+This runs all 11 backend tests, 5 frontend integration tests, then builds Vue and
+runs production HTTP tests against the real built assets and API. Individual
+commands are `npm run test:backend`, `npm run test:frontend`, and
+`npm run test:production` (the last also builds Vue). Tests start their own HTTP
+servers on temporary ports and create uniquely named local test databases. They
+do not clear existing data or drop databases; isolated test databases are retained
+in MongoDB and no database files are added to Git. Only each test's own fixtures
+are created/deleted. The backend's intentional unavailable-database test prints
+an expected connection-error message.
+
+For frontend development with hot reload, run `npm run dev:backend` and
+`npm run dev:frontend` in two terminals, then open **http://127.0.0.1:5173**.
+Vite proxies `/api` requests to Express on port 3000. A Vite process is not needed
+for the production workflow above. Dependencies, build output, caches, logs, and
+temporary files are ignored by Git; the local-only `.env` must remain tracked.
+
+Backend API shapes and standalone-database integrity limits are documented in
+[backend/README.md](backend/README.md). Frontend architecture, development, and
+manual browser checks are documented in [frontend/README.md](frontend/README.md).
+Automated frontend interactions use jsdom; production tests verify HTTP routes,
+assets, JSON responses, persistence, and cascades. Desktop/mobile layout and
+keyboard behavior should also be checked in a real browser.
+
+## Original professor-provided assignment
+
+The original assignment text below is retained. Its starter-code commands
+describe the initial project; use the current installation/build/run commands
+above for the completed application.
 
 ## Assignment Overview
 

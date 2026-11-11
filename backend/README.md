@@ -87,5 +87,18 @@ No database is dropped. Tests cover automatic startup/indexes, validation,
 duplicates, CRUD, references, rosters, restart persistence, cascading deletion,
 concurrent requests, legacy compatibility, and connection failures.
 
-Phase 1 does not include Vue migration, frontend dependencies, a production
-frontend build, or Express static-asset serving. The original frontend is unchanged.
+## Production frontend hosting
+
+Express also serves the Vue production assets from `frontend/dist/`, using an
+absolute path independent of the working directory. Run `npm install`,
+`npm run build`, and `npm start` from the repository root for the full application
+at **http://localhost:3000**. The backend-only commands above still work.
+
+Page refresh and direct links to `/students`, `/students/:id`, `/courses`, and
+`/enrollments` return the built Vue entry page; `/`, `/index.html`, and
+`/courses.html` are also supported. API and legacy endpoint handlers retain
+their existing JSON behavior. Unknown APIs and missing assets return JSON 404;
+missing frontend builds return a helpful JSON 503 for page requests.
+
+Root `npm run test:production` builds Vue and tests this integration against a
+new isolated local database, retained after tests. No existing database is cleared.

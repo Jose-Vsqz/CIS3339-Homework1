@@ -1,4 +1,4 @@
-// Relative URLs use Vite's /api proxy in development.
+// Relative URLs use Vite's proxy in development and the Express origin in production.
 export async function request(path, { method = 'GET', body, duplicateMessage } = {}) {
   let response
   try {

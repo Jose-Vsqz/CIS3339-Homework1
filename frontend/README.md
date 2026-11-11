@@ -63,9 +63,15 @@ npm run build
 npm test
 ```
 
-`npm run build` generates `frontend/dist/` (ignored by Git). This is a frontend
-compilation check only. Express static serving, the final production URL, and
-production route refresh handling belong to Phase 3 and are not configured here.
+`npm run build` generates `frontend/dist/` (ignored by Git). For production,
+run `npm install`, `npm run build`, and `npm start` from the repository root,
+then open **http://localhost:3000**. Express serves both the build and `/api`,
+including direct navigation and refresh for Vue routes. No Vite server is needed
+in production. The same relative API requests work through the development
+proxy or directly through Express, without changing frontend environment values.
+Root `npm run test:production` builds Vue and checks production pages, assets,
+and API behavior with an isolated database. See the root README for PowerShell
+setup and all available root scripts.
 
 `npm test` runs Vitest and Vue Test Utils using jsdom for rendered component
 interactions. It starts the real Phase 1 backend on a temporary port against a
