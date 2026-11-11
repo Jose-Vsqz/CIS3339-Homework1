@@ -2,7 +2,9 @@
 
 Phase 1 backend setup, API endpoints, integrity limits, and test commands are
 documented in [backend/README.md](backend/README.md). The assignment requirements
-below are retained; Vue migration and production frontend deployment are pending.
+below are retained. Phase 2 Vue development, build, and test instructions are in
+[frontend/README.md](frontend/README.md). Production frontend hosting is pending
+Phase 3.
 
 ## Assignment Overview
 

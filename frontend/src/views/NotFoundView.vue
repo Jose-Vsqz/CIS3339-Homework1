@@ -1,0 +1,1 @@
+<template><section class="panel"><p class="eyebrow">Page not found</p><h1>Let's get you back.</h1><p>This page does not exist.</p><RouterLink to="/students">Go to students</RouterLink></section></template>
