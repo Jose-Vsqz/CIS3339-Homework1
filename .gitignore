@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Vue production output
+/frontend/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files and editor backups
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Homework 1 requires the real local-only .env to be tracked.
+!.env
